@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Octokit;
 using Octokit.Internal;
+using WeReview.Data;
 
 namespace WeReview.Pages
 {

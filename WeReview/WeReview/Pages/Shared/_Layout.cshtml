@@ -6,14 +6,21 @@
     <title>@ViewData["Title"] - WeReview</title>
 
     <environment include="Development">
+        <script src="https://kit.fontawesome.com/121230d4da.js"></script>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/bootstrap-social.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+
+
     </environment>
     <environment exclude="Development">
+        <script src="https://kit.fontawesome.com/121230d4da.js"></script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/bootstrap-social.css" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+
     </environment>
 </head>
 <body>
@@ -31,8 +38,6 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-page="/Index">Home</a></li>
-                    <li><a asp-page="/About">About</a></li>
-                    <li><a asp-page="/Contact">Contact</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

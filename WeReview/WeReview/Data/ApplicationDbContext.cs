@@ -12,5 +12,7 @@ namespace WeReview.Data
             : base(options)
         {
         }
+
+        public DbSet<WeReview.Models.GitHubUser> GitHubUsers { get; set; }
     }
 }

@@ -8,7 +8,11 @@
     <div class="col-md-12">
         @if (!User.Identity.IsAuthenticated)
         {
-            <a asp-action="Login" asp-controller="Account" class="btn btn-default">Log In with GitHub</a>
+            <a asp-action="Login" asp-controller="Account" class="btn btn-social btn-github">
+                <span>
+                    <i class="fab fa-github-square"></i>
+                </span>Log In with GitHub
+            </a>
         }
         else
         {
