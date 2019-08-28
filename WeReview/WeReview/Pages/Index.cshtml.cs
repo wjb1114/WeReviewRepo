@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Octokit;
 using Octokit.Internal;
 using WeReview.Data;
+using WeReview.Models;
 
 namespace WeReview.Pages
 {
@@ -22,7 +23,19 @@ namespace WeReview.Pages
 
         public string GitHubUrl { get; set; }
 
+        public GitHubUser ThisUser { get; set; }
+
         public IReadOnlyList<Repository> Repositories { get; set; }
+
+        private ApplicationDbContext _context;
+
+        private readonly object thisLock;
+
+        public IndexModel(ApplicationDbContext context)
+        {
+            _context = context;
+            thisLock = new object();
+        }
 
         public async Task OnGetAsync()
         {
@@ -32,6 +45,27 @@ namespace WeReview.Pages
                 GitHubLogin = User.FindFirst(c => c.Type == "urn:github:login")?.Value;
                 GitHubUrl = User.FindFirst(c => c.Type == "urn:github:url")?.Value;
                 GitHubAvatar = User.FindFirst(c => c.Type == "urn:github:avatar")?.Value;
+
+                GitHubUser foundUser;
+
+                lock(thisLock)
+                {
+                    foundUser = _context.GitHubUsers.Where(u => u.Username == GitHubLogin).FirstOrDefault();
+                }
+
+                if (foundUser == null)
+                {
+                    foundUser = new GitHubUser();
+                    foundUser.Username = GitHubLogin;
+                    foundUser.GitHubUrl = GitHubUrl;
+                    lock(thisLock)
+                    {
+                        _context.GitHubUsers.Add(foundUser);
+                        _context.SaveChanges();
+                    }
+                }
+
+                ThisUser = foundUser;
 
                 string AccessToken = await HttpContext.GetTokenAsync("access_token");
 
