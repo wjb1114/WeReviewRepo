@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace WeReview.Models
 {
-    public class GitHubUser
+    public class GitHubRepository
     {
         [Key]
-        public int UserId { get; set; }
-        public string Username { get; set; }
-        public string GitHubUrl { get; set; }
+        public int RepositoryId { get; set; }
+        public string CloneUrl { get; set; }
+        public string FullName { get; set; }
+        public string ApiUrl { get; set; }
         public ICollection<GitHubUserRepository> UserRepositories { get; set; }
     }
 }
