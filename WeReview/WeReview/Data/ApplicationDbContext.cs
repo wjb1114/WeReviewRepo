@@ -19,6 +19,7 @@ namespace WeReview.Data
         public DbSet<GitHubBranch> GitHubBranches { get; set; }
         public DbSet<GitHubFile> GitHubFiles { get; set; }
         public DbSet<GitHubLine> GitHubLines { get; set; }
+        public DbSet<GitHubUserRepository> GitHubUserRepos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

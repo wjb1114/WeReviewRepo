@@ -72,6 +72,37 @@ namespace WeReview.Pages
                 var github = new GitHubClient(new ProductHeaderValue("AspNetCoreGitHubAuth"),
                     new InMemoryCredentialStore(new Credentials(AccessToken)));
                 Repositories = await github.Repository.GetAllForCurrent();
+
+                foreach (Repository repo in Repositories)
+                {
+                    GitHubRepository matchingRepo;
+                    lock(thisLock)
+                    {
+                        matchingRepo = _context.GitHubRepos.Where(r => repo.Archived == false).Where(r => repo.FullName == r.FullName).SingleOrDefault();
+                    }
+                    if (matchingRepo == null)
+                    {
+                        matchingRepo = new GitHubRepository();
+                        GitHubUserRepository userRepo = new GitHubUserRepository();
+                        matchingRepo.FullName = repo.FullName;
+                        matchingRepo.CloneUrl = repo.CloneUrl;
+                        matchingRepo.ApiUrl = repo.Url;
+                        lock (thisLock)
+                        {
+                            _context.GitHubRepos.Add(matchingRepo);
+                            _context.SaveChanges();
+                        }
+                        userRepo.RepositoryId = matchingRepo.RepositoryId;
+                        userRepo.UserId = ThisUser.UserId;
+                        lock (thisLock)
+                        {
+                            userRepo.User = _context.GitHubUsers.Where(u => u.UserId == userRepo.UserId).Single();
+                            userRepo.Repository = _context.GitHubRepos.Where(r => r.RepositoryId == userRepo.RepositoryId).Single();
+                            _context.GitHubUserRepos.Add(userRepo);
+                            _context.SaveChanges();
+                        }
+                    }
+                }
             }
         }
     }
