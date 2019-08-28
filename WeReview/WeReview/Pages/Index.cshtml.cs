@@ -76,9 +76,11 @@ namespace WeReview.Pages
                 foreach (Repository repo in Repositories)
                 {
                     GitHubRepository matchingRepo;
+                    GitHubUserRepository matchingUserRepo;
                     lock(thisLock)
                     {
                         matchingRepo = _context.GitHubRepos.Where(r => repo.Archived == false).Where(r => repo.FullName == r.FullName).SingleOrDefault();
+                        
                     }
                     if (matchingRepo == null)
                     {
@@ -100,6 +102,26 @@ namespace WeReview.Pages
                             userRepo.Repository = _context.GitHubRepos.Where(r => r.RepositoryId == userRepo.RepositoryId).Single();
                             _context.GitHubUserRepos.Add(userRepo);
                             _context.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        lock (thisLock)
+                        {
+                            matchingUserRepo = _context.GitHubUserRepos.Where(u => u.RepositoryId == matchingRepo.RepositoryId).Where(u => u.UserId == ThisUser.UserId).SingleOrDefault();
+                        }
+                        if (matchingUserRepo == null)
+                        {
+                            GitHubUserRepository userRepo = new GitHubUserRepository();
+                            userRepo.RepositoryId = matchingRepo.RepositoryId;
+                            userRepo.UserId = ThisUser.UserId;
+                            lock (thisLock)
+                            {
+                                userRepo.User = _context.GitHubUsers.Where(u => u.UserId == userRepo.UserId).Single();
+                                userRepo.Repository = _context.GitHubRepos.Where(r => r.RepositoryId == userRepo.RepositoryId).Single();
+                                _context.GitHubUserRepos.Add(userRepo);
+                                _context.SaveChanges();
+                            }
                         }
                     }
                 }
