@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Authentication;
 using Octokit;
 using WeReview.Data;
 using WeReview.Models;
+using System.Net;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace WeReview.Controllers
 {
@@ -28,7 +31,37 @@ namespace WeReview.Controllers
             {
                 repo = _context.GitHubRepos.Where(r => r.RepositoryId == id).Single();
             }
+
+            GetBranchData(repo.ApiUrl);
+
             return View(repo);
+        }
+
+        private void GetBranchData(string apiPath)
+        {
+            string test = User.Identity.AuthenticationType;
+            test = User.Identity.Name;
+            string data = string.Empty;
+            string url = apiPath + @"/branches";
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip;
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                data = reader.ReadToEnd();
+            }
+
+            JObject returnData = JObject.Parse(data);
+
+            for (int i = 0; i < returnData.Count; i++)
+            {
+                JToken branchObject = returnData[i];
+            }
+
+            
         }
     }
 }
