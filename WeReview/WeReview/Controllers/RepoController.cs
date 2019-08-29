@@ -10,6 +10,7 @@ using WeReview.Models;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using Octokit.Internal;
 
 namespace WeReview.Controllers
 {
@@ -32,36 +33,39 @@ namespace WeReview.Controllers
                 repo = _context.GitHubRepos.Where(r => r.RepositoryId == id).Single();
             }
 
-            GetBranchData(repo.ApiUrl);
+            GetBranchData(repo);
 
             return View(repo);
         }
 
-        private void GetBranchData(string apiPath)
+        private async void GetBranchData(GitHubRepository repo)
         {
-            string test = User.Identity.AuthenticationType;
-            test = User.Identity.Name;
-            string data = string.Empty;
-            string url = apiPath + @"/branches";
+            string AccessToken = await HttpContext.GetTokenAsync("access_token");
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip;
+            string[] repoData = repo.FullName.Split('/');
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            var github = new GitHubClient(new ProductHeaderValue("AspNetCoreGitHubAuth"),
+                new InMemoryCredentialStore(new Credentials(AccessToken)));
+            IReadOnlyList<Branch> branches = await github.Repository.Branch.GetAll(repoData[0], repoData[1]);
+            foreach (Branch b in branches)
             {
-                data = reader.ReadToEnd();
+                GitHubBranch branch;
+                lock(thisLock)
+                {
+                    branch = _context.GitHubBranches.Where(br => br.Name == b.Name).Where(br => br.RepositoryId == repo.RepositoryId).SingleOrDefault();
+                }
+                if (branch == null)
+                {
+                    branch = new GitHubBranch();
+                    branch.Name = b.Name;
+                    lock (thisLock)
+                    {
+                        _context.GitHubBranches.Add(branch);
+                        _context.SaveChanges();
+                    }
+                }
             }
 
-            JObject returnData = JObject.Parse(data);
-
-            for (int i = 0; i < returnData.Count; i++)
-            {
-                JToken branchObject = returnData[i];
-            }
-
-            
         }
     }
 }
