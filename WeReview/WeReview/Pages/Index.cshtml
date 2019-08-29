@@ -25,9 +25,9 @@
                     <p><i class="fab fa-github"></i><a href="@Model.GitHubUrl">@Model.GitHubLogin</a></p>
                     <h4>Repositories</h4>
                     <ul>
-                        @foreach (var repo in Model.Repositories)
+                        @foreach (var repo in Model.GitHubRepos)
                         {
-                            <li><a href="@repo.HtmlUrl">@repo.FullName</a></li>
+                            <li><a href="@(@"Repo/Index?id=" + repo.RepositoryId)">@repo.FullName</a></li>
                         }
                     </ul>
                 </div>

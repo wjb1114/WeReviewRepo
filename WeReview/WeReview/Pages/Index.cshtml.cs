@@ -27,6 +27,8 @@ namespace WeReview.Pages
 
         public IReadOnlyList<Repository> Repositories { get; set; }
 
+        public List<GitHubRepository> GitHubRepos { get; set; }
+
         private ApplicationDbContext _context;
 
         private readonly object thisLock;
@@ -35,6 +37,7 @@ namespace WeReview.Pages
         {
             _context = context;
             thisLock = new object();
+            GitHubRepos = new List<GitHubRepository>();
         }
 
         public async Task OnGetAsync()
@@ -92,6 +95,7 @@ namespace WeReview.Pages
                         lock (thisLock)
                         {
                             _context.GitHubRepos.Add(matchingRepo);
+                            GitHubRepos.Add(matchingRepo);
                             _context.SaveChanges();
                         }
                         userRepo.RepositoryId = matchingRepo.RepositoryId;
@@ -106,6 +110,11 @@ namespace WeReview.Pages
                     }
                     else
                     {
+                        lock (thisLock)
+                        {
+                            matchingRepo.UserRepositories = _context.GitHubUserRepos.Where(u => u.RepositoryId == matchingRepo.RepositoryId).ToList();
+                        }
+                        GitHubRepos.Add(matchingRepo);
                         lock (thisLock)
                         {
                             matchingUserRepo = _context.GitHubUserRepos.Where(u => u.RepositoryId == matchingRepo.RepositoryId).Where(u => u.UserId == ThisUser.UserId).SingleOrDefault();
