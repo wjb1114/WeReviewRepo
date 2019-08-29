@@ -61,7 +61,7 @@ namespace WeReview
         {
             options.ClientId = Configuration["GitHub:ClientId"];
             options.ClientSecret = Configuration["GitHub:ClientSecret"];
-            options.CallbackPath = new PathString("/signin-github");
+            options.CallbackPath = new PathString("/AuthenticateAccount");
 
             options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
             options.TokenEndpoint = "https://github.com/login/oauth/access_token";
