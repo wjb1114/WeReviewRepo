@@ -14,6 +14,9 @@ namespace WeReview.Models
         public string Name { get; set; }
         public string Path { get; set; }
         public string DownloadPath { get; set; }
+        public bool IsFile { get; set; }
+        public bool IsDir { get; set; }
+        public int ParentId { get; set; }
         public int BranchId { get; set; }
         [ForeignKey("BranchId")]
         public GitHubBranch Branch { get; set; }
