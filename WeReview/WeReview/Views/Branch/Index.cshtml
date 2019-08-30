@@ -1,0 +1,14 @@
+﻿@model List<WeReview.Models.GitHubFile>
+
+@foreach (WeReview.Models.GitHubFile f in Model)
+{
+    if (f.IsDir == true && f.IsFile == false)
+    {
+        <p><a href="/Branch/Index?id=@(f.BranchId)&parentId=@(f.FileId)">@(f.Name + @"/")</a></p>
+    }
+    else
+    {
+        <p>@(f.Name)</p>
+    }
+}
+

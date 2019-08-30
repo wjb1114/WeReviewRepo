@@ -22,6 +22,9 @@
     <Content Update="Views\AuthenticateAccount\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Branch\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Shared\_CookieConsentPartial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

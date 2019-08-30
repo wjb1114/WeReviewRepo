@@ -1,7 +1,14 @@
-﻿@model WeReview.Models.GitHubRepository
+﻿@model List<WeReview.Models.GitHubBranch>
 
-<h2>@Model.FullName</h2>
+@{ 
+    WeReview.Models.GitHubRepository repo = (WeReview.Models.GitHubRepository)ViewData["Repo"];
+}
 
-<p>@Model.CloneUrl</p>
+<h2>@(repo.FullName)</h2>
 
-<p>@Model.ApiUrl</p>
+<h3>Branches:</h3>
+
+@foreach(WeReview.Models.GitHubBranch b in Model)
+{
+    <p><a href="/Branch/Index?id=@(b.BranchId)">@(b.Name)</a></p>
+}

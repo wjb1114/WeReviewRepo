@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WeReview.Views.Repo
+namespace WeReview.Views.Branch
 {
     public class IndexModel : PageModel
     {

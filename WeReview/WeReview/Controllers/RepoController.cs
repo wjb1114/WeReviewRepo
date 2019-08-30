@@ -33,16 +33,20 @@ namespace WeReview.Controllers
                 repo = _context.GitHubRepos.Where(r => r.RepositoryId == id).Single();
             }
 
-            await GetBranchData(repo);
+            List<GitHubBranch> branchList = await GetBranchData(repo);
 
-            return View(repo);
+            ViewData.Add("Repo", repo);
+
+            return View(branchList);
         }
 
-        private async Task GetBranchData(GitHubRepository repo)
+        private async Task<List<GitHubBranch>> GetBranchData(GitHubRepository repo)
         {
+
             string AccessToken = await HttpContext.GetTokenAsync("access_token");
 
             string[] repoData = repo.FullName.Split('/');
+            List<GitHubBranch> branchList = new List<GitHubBranch>();
 
             var github = new GitHubClient(new ProductHeaderValue("AspNetCoreGitHubAuth"),
                 new InMemoryCredentialStore(new Credentials(AccessToken)));
@@ -80,8 +84,11 @@ namespace WeReview.Controllers
                     DeleteOldFileData(branch);
                     await GetBranchFiles(repoData[0], repoData[1], branch);
                 }
+
+                branchList.Add(branch);
                 
             }
+            return branchList;
 
         }
 
