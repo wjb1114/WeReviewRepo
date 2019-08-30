@@ -66,8 +66,21 @@ namespace WeReview.Controllers
                         _context.GitHubBranches.Add(branch);
                         _context.SaveChanges();
                     }
+                    await GetBranchFiles(repoData[0], repoData[1], branch);
                 }
-                await GetBranchFiles(repoData[0], repoData[1], branch);
+                else if (branch.Sha != b.Commit.Sha)
+                {
+                    branch.Sha = b.Commit.Sha;
+                    branch.ApiUrl = b.Commit.Url;
+                    lock (thisLock)
+                    {
+                        _context.GitHubBranches.Add(branch);
+                        _context.SaveChanges();
+                    }
+                    DeleteOldFileData(branch);
+                    await GetBranchFiles(repoData[0], repoData[1], branch);
+                }
+                
             }
 
         }
@@ -125,6 +138,19 @@ namespace WeReview.Controllers
                         _context.SaveChanges();
                     }
                 }
+            }
+        }
+
+        private void DeleteOldFileData(GitHubBranch branch)
+        {
+            lock (thisLock)
+            {
+                List<GitHubFile> fileList = _context.GitHubFiles.Where(f => f.BranchId == branch.BranchId).ToList();
+                foreach (GitHubFile f in fileList)
+                {
+                    _context.GitHubFiles.Remove(f);
+                }
+                _context.SaveChanges();
             }
         }
     }
