@@ -11,6 +11,7 @@ namespace WeReview.Models
     {
         [Key]
         public int LineId { get; set; }
+        public int LineInFile { get; set; }
         public string Content { get; set; }
         public bool IsChanged { get; set; }
         public bool IsApproved { get; set; }
