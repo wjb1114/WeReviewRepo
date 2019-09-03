@@ -92,6 +92,7 @@ namespace WeReview.Pages
                         matchingRepo.FullName = repo.FullName;
                         matchingRepo.CloneUrl = repo.CloneUrl;
                         matchingRepo.ApiUrl = repo.Url;
+                        matchingRepo.MasterSelected = false;
                         lock (thisLock)
                         {
                             _context.GitHubRepos.Add(matchingRepo);

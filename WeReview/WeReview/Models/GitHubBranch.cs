@@ -14,6 +14,7 @@ namespace WeReview.Models
         public string Name { get; set; }
         public string Sha { get; set; }
         public string ApiUrl { get; set; }
+        public bool IsMaster { get; set; }
         public int RepositoryId { get; set; }
         [ForeignKey("RepositoryId")]
         public GitHubRepository Repository { get; set; }

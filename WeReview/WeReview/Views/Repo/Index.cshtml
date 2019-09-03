@@ -1,6 +1,6 @@
 ﻿@model List<WeReview.Models.GitHubBranch>
 
-@{ 
+@{
     WeReview.Models.GitHubRepository repo = (WeReview.Models.GitHubRepository)ViewData["Repo"];
 }
 
@@ -8,7 +8,27 @@
 
 <h3>Branches:</h3>
 
-@foreach(WeReview.Models.GitHubBranch b in Model)
+@if (repo.MasterSelected == false)
 {
-    <p><a href="/Branch/Index?id=@(b.BranchId)">@(b.Name)</a></p>
+    @foreach (WeReview.Models.GitHubBranch b in Model)
+    {
+        @(b.Name)
+        <form action="/Repo/Index" method="GET">
+            <input value="@(repo.RepositoryId)" name="id" hidden />
+            <input value="@(b.BranchId)" name="masterId" hidden />
+            <button type="submit">Make this the master branch</button>
+        </form>
+
+    }
 }
+else
+{
+    @foreach (WeReview.Models.GitHubBranch b in Model)
+    {
+        if (b.IsMaster == false)
+        {
+            <p><a href="/Branch/Index?id=@(b.BranchId)">@(b.Name)</a></p>
+        }
+    }
+}
+

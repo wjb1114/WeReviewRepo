@@ -25,12 +25,27 @@ namespace WeReview.Controllers
             thisLock = new object();
             _context = context;
         }
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int id, int? masterId = null)
         {
             GitHubRepository repo;
             lock (thisLock)
             {
                 repo = _context.GitHubRepos.Where(r => r.RepositoryId == id).Single();
+            }
+
+            if (masterId != null)
+            {
+                GitHubBranch masterBranch;
+                lock(thisLock)
+                {
+                    masterBranch = _context.GitHubBranches.Where(b => b.BranchId == masterId).Single();
+                }
+                masterBranch.IsMaster = true;
+                repo.MasterSelected = true;
+                lock(thisLock)
+                {
+                    _context.SaveChanges();
+                }
             }
 
             List<GitHubBranch> branchList = await GetBranchData(repo);
@@ -65,6 +80,7 @@ namespace WeReview.Controllers
                     branch.RepositoryId = repo.RepositoryId;
                     branch.Sha = b.Commit.Sha;
                     branch.ApiUrl = b.Commit.Url;
+                    branch.IsMaster = false;
                     lock (thisLock)
                     {
                         _context.GitHubBranches.Add(branch);

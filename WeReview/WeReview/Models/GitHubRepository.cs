@@ -13,6 +13,7 @@ namespace WeReview.Models
         public string CloneUrl { get; set; }
         public string FullName { get; set; }
         public string ApiUrl { get; set; }
+        public bool MasterSelected { get; set; }
         public ICollection<GitHubUserRepository> UserRepositories { get; set; }
     }
 }
