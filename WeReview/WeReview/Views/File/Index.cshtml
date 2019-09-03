@@ -1,14 +1,25 @@
 ﻿@model List<WeReview.Models.GitHubLine>
 
-@foreach (WeReview.Models.GitHubFile f in Model)
+@if (Model.Count == 0)
 {
-    if (f.IsDir == true && f.IsFile == false)
+    <p>Not a supported file type.</p>
+}
+else
+{
+    @foreach (WeReview.Models.GitHubLine l in Model)
     {
-        <p><a href="/Branch/Index?id=@(f.BranchId)&parentId=@(f.FileId)">@(f.Name + @"/")</a></p>
-    }
-    else
-    {
-        <p>@(f.Name)</p>
+        if (l.IsApproved == false && l.IsChanged == true)
+        {
+            <code style="white-space: pre; color:#c7254e; background-color:#f9f2f4;">@(l.Content)</code><br />
+        }
+        else if (l.IsApproved == true && l.IsChanged == true)
+        {
+            <code style="white-space: pre; color:#368a2f; background-color:#c5fcc0;">@(l.Content)</code><br />
+        }
+        else if (l.IsChanged == false)
+        {
+            <code style="white-space: pre; color:#000000; background-color:#ffffff;">@(l.Content)</code><br />
+        }
     }
 }
 
