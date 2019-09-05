@@ -35,3 +35,27 @@ body {
         display: none;
     }
 }
+
+code.unapproved-line {
+    white-space: pre;
+    color: #c7254e;
+    background-color: #f9f2f4;
+}
+
+code.approved-line {
+    white-space: pre;
+    color: #368a2f;
+    background-color: #c5fcc0;
+}
+
+code.unchanged-line {
+    white-space: pre;
+    color: #000000;
+    background-color: #ffffff;
+}
+
+code.selected-line {
+    white-space: pre;
+    color: #2f528a;
+    background-color: #b4cffa;
+}

@@ -77,5 +77,20 @@ namespace WeReview.Controllers
 
             return View(selectedLines);
         }
+
+        [HttpPost]
+        public void Index([FromBody]WeReview.Classes.ModifiedLine line)
+        {
+            List<GitHubLine> linesForFile = _context.GitHubLines.Where(l => l.FileId == line.fileId).ToList();
+            List<GitHubLine> linesMatching = new List<GitHubLine>();
+
+            foreach(int i in line.lineIds)
+            {
+                GitHubLine thisLine = linesForFile.Where(l => l.LineInFile == i).Single();
+                thisLine.IsApproved = line.isApproved;
+                linesMatching.Add(thisLine);
+            }
+            _context.SaveChanges();
+        }
     }
 }

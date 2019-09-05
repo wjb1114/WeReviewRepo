@@ -1,25 +1,69 @@
 ﻿@model List<WeReview.Models.GitHubLine>
 
+@{
+    int fileId = Model[0].FileId;
+}
+
 @if (Model.Count == 0)
 {
     <p>Not a supported file type.</p>
 }
 else
 {
-    @foreach (WeReview.Models.GitHubLine l in Model)
+    @for (int i = 1; i <= Model.Count; i++)
     {
-        if (l.IsApproved == false && l.IsChanged == true)
+        if (Model[i-1].IsApproved == false && Model[i-1].IsChanged == true)
         {
-            <code style="white-space: pre; color:#c7254e; background-color:#f9f2f4;">@(l.Content)</code><br />
+            <code id="@("line" + i)" class="unapproved-line" onclick="selectLine(this)">@(Model[i-1].Content)</code><br />
         }
-        else if (l.IsApproved == true && l.IsChanged == true)
+        else if (Model[i-1].IsApproved == true && Model[i-1].IsChanged == true)
         {
-            <code style="white-space: pre; color:#368a2f; background-color:#c5fcc0;">@(l.Content)</code><br />
+            <code id="@("line" + i)" class="approved-line">@(Model[i-1].Content)</code><br />
         }
-        else if (l.IsChanged == false)
+        else if (Model[i-1].IsChanged == false)
         {
-            <code style="white-space: pre; color:#000000; background-color:#ffffff;">@(l.Content)</code><br />
+            <code id="@("line" + i)" class="unchanged-line">@(Model[i-1].Content)</code><br />
         }
     }
 }
+
+<button type="button" class="btn ntn-primary" onclick="submitChanges(true)">Approve Selected</button>
+
+<script type="text/javascript">
+    function selectLine(element) {
+        element.className = "selected-line";
+        element.setAttribute("onclick", "javascript:deselectLine(this)");
+    }
+    function deselectLine(element) {
+        element.className = "unapproved-line";
+        element.setAttribute("onclick", "javascript:selectLine(this)");
+    }
+    function submitChanges(lineApproval) {
+        var ids = [];
+        var selectedLines = document.getElementsByClassName("selected-line");
+        for (i = 0; i < selectedLines.length; i++) {
+            ids.push(selectedLines[i].id.substring(4));
+        }
+
+        var dict = {
+            fileId: @(fileId),
+            lineIds: ids,
+            isApproved: lineApproval
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "../File/Index",
+            contentType: 'application/json',
+            data: JSON.stringify(dict),
+            success: function (data, textStatus, jQxhr) {
+                window.location.reload(true)
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+        })
+    }
+
+</script>
 
