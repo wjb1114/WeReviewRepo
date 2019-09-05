@@ -79,18 +79,28 @@ namespace WeReview.Controllers
         }
 
         [HttpPost]
-        public void Index([FromBody]WeReview.Classes.ModifiedLine line)
+        public void Index([FromBody]GitHubReview review)
         {
-            List<GitHubLine> linesForFile = _context.GitHubLines.Where(l => l.FileId == line.fileId).ToList();
+            List<GitHubLine> linesForFile;
+            lock (thisLock)
+            {
+                linesForFile = _context.GitHubLines.Where(l => l.FileId == review.FileId).ToList();
+            }
             List<GitHubLine> linesMatching = new List<GitHubLine>();
 
-            foreach(int i in line.lineIds)
+            foreach(int i in review.LineIds)
             {
                 GitHubLine thisLine = linesForFile.Where(l => l.LineInFile == i).Single();
-                thisLine.IsApproved = line.isApproved;
+                thisLine.IsApproved = review.IsApproved;
                 linesMatching.Add(thisLine);
             }
-            _context.SaveChanges();
+            lock (thisLock)
+            {
+                review.File = _context.GitHubFiles.Where(f => f.FileId == review.FileId).Single();
+                _context.GitHubReviews.Add(review);
+                _context.SaveChanges();
+            }
+            
         }
     }
 }

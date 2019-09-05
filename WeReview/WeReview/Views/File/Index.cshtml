@@ -27,6 +27,8 @@ else
     }
 }
 
+<textarea id="comment-text" rows="4" cols="50" required placeholder="Enter your comments"></textarea>
+
 <button type="button" class="btn ntn-primary" onclick="submitChanges(true)">Approve Selected</button>
 
 <script type="text/javascript">
@@ -45,10 +47,13 @@ else
             ids.push(selectedLines[i].id.substring(4));
         }
 
+        var comment = document.getElementById("comment-text").value;
+
         var dict = {
-            fileId: @(fileId),
-            lineIds: ids,
-            isApproved: lineApproval
+            FileId: @(fileId),
+            LineIds: ids,
+            IsApproved: lineApproval,
+            Comment: comment
         };
 
         $.ajax({
