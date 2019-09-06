@@ -13,6 +13,7 @@ namespace WeReview.Models
         public int Id { get; set; }
         public int[] LineIds { get; set; }
         public string Comment { get; set; }
+        public string Reason { get; set; }
         public int FileId { get; set; }
         [ForeignKey("FileId")]
         public GitHubFile File { get; set; }
