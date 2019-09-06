@@ -3,6 +3,7 @@ for details on configuring this project to bundle and minify static web assets. 
 body {
     padding-top: 50px;
     padding-bottom: 20px;
+    z-index: 1;
 }
 
 /* Wrapping element */
@@ -36,7 +37,7 @@ body {
     }
 }
 
-code.unapproved-line {
+code.rejected-line {
     white-space: pre;
     color: #c7254e;
     background-color: #f9f2f4;
@@ -58,4 +59,20 @@ code.selected-line {
     white-space: pre;
     color: #2f528a;
     background-color: #b4cffa;
+}
+
+code.unapproved-line {
+    white-space: pre;
+    color: #61581b;
+    background-color: #f7eb97;
+}
+
+#floating-form {
+    position: fixed;
+    top: 10em;
+    right: 3em;
+    z-index: 2;
+    background-color: #333333;
+    padding: 1em;
+    border-radius: 3%;
 }

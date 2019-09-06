@@ -59,6 +59,7 @@ namespace WeReview.Controllers
                         thisLine.LineInFile = i;
                         thisLine.IsApproved = false;
                         thisLine.IsChanged = false;
+                        thisLine.IsReviewed = false;
                         lock (thisLock)
                         {
                             _context.GitHubLines.Add(thisLine);
@@ -92,6 +93,7 @@ namespace WeReview.Controllers
             {
                 GitHubLine thisLine = linesForFile.Where(l => l.LineInFile == i).Single();
                 thisLine.IsApproved = review.IsApproved;
+                thisLine.IsReviewed = true;
                 linesMatching.Add(thisLine);
             }
             lock (thisLock)

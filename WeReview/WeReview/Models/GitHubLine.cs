@@ -15,6 +15,7 @@ namespace WeReview.Models
         public string Content { get; set; }
         public bool IsChanged { get; set; }
         public bool IsApproved { get; set; }
+        public bool IsReviewed { get; set; }
         public int FileId { get; set; }
         [ForeignKey("FileId")]
         public GitHubFile File { get; set; }

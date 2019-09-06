@@ -10,26 +10,46 @@
 }
 else
 {
+    <div id="floating-form">
+        <div>
+            <textarea id="comment-text" rows="4" cols="50" required placeholder="Enter your comments"></textarea>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary" onclick="submitChanges(true)">Approve Selected</button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-danger" onclick="submitChanges(false)">Reject Selected</button>
+        </div>
+    </div>
+
     @for (int i = 1; i <= Model.Count; i++)
     {
-        if (Model[i-1].IsApproved == false && Model[i-1].IsChanged == true)
+        if (Model[i - 1].IsChanged == false)
         {
-            <code id="@("line" + i)" class="unapproved-line" onclick="selectLine(this)">@(Model[i-1].Content)</code><br />
+            <code id="@("line" + i)" class="unchanged-line">@(Model[i - 1].Content)</code><br />
         }
-        else if (Model[i-1].IsApproved == true && Model[i-1].IsChanged == true)
+        else
         {
-            <code id="@("line" + i)" class="approved-line">@(Model[i-1].Content)</code><br />
-        }
-        else if (Model[i-1].IsChanged == false)
-        {
-            <code id="@("line" + i)" class="unchanged-line">@(Model[i-1].Content)</code><br />
+            if (Model[i - 1].IsReviewed == false)
+            {
+                <code id="@("line" + i)" class="unapproved-line" onclick="selectLine(this)">@(Model[i - 1].Content)</code><br />
+            }
+            else
+            {
+                if (Model[i - 1].IsApproved == false)
+                {
+                    <code id="@("line" + i)" class="rejected-line">@(Model[i - 1].Content)</code><br />
+                }
+                else
+                {
+                    <code id="@("line" + i)" class="approved-line">@(Model[i - 1].Content)</code><br />
+                }
+            }
         }
     }
 }
 
-<textarea id="comment-text" rows="4" cols="50" required placeholder="Enter your comments"></textarea>
 
-<button type="button" class="btn ntn-primary" onclick="submitChanges(true)">Approve Selected</button>
 
 <script type="text/javascript">
     function selectLine(element) {
