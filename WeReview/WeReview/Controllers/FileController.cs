@@ -8,6 +8,7 @@ using WeReview.Models;
 using Octokit;
 using Microsoft.AspNetCore.Authentication;
 using Octokit.Internal;
+using System.Security.Claims;
 
 namespace WeReview.Controllers
 {
@@ -83,10 +84,16 @@ namespace WeReview.Controllers
         public void Index([FromBody]GitHubReview review)
         {
             List<GitHubLine> linesForFile;
+            GitHubUser reviewUser;
+            string githubId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             lock (thisLock)
             {
                 linesForFile = _context.GitHubLines.Where(l => l.FileId == review.FileId).ToList();
+                reviewUser = _context.GitHubUsers.Where(u => u.GitHubUserId == githubId).Single();
+                review.User = reviewUser;
+                review.UserId = review.User.UserId;
             }
+            
             List<GitHubLine> linesMatching = new List<GitHubLine>();
 
             foreach(int i in review.LineIds)
@@ -101,8 +108,7 @@ namespace WeReview.Controllers
                 review.File = _context.GitHubFiles.Where(f => f.FileId == review.FileId).Single();
                 _context.GitHubReviews.Add(review);
                 _context.SaveChanges();
-            }
-            
+            }            
         }
     }
 }

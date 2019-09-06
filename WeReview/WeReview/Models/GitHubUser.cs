@@ -12,6 +12,7 @@ namespace WeReview.Models
         public int UserId { get; set; }
         public string Username { get; set; }
         public string GitHubUrl { get; set; }
+        public string GitHubUserId { get; set; }
         public ICollection<GitHubUserRepository> UserRepositories { get; set; }
     }
 }

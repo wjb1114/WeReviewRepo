@@ -61,7 +61,9 @@ namespace WeReview.Pages
                     foundUser = new GitHubUser();
                     foundUser.Username = GitHubLogin;
                     foundUser.GitHubUrl = GitHubUrl;
-                    lock(thisLock)
+                    foundUser.GitHubUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                    lock (thisLock)
                     {
                         _context.GitHubUsers.Add(foundUser);
                         _context.SaveChanges();
