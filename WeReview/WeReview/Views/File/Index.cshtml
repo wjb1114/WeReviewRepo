@@ -11,15 +11,32 @@
 else
 {
     <div id="floating-form">
+        <p>Key:</p>
+        <div>
+            <code class="unchanged-line">Unchanged code</code>
+        </div>
+        <div>
+            <code class="unapproved-line">Changed, unreviewed code</code>
+        </div>
+        <div>
+            <code class="selected-line">Currently selected line(s)</code>
+        </div>
+        <div>
+            <code class="approved-line">Approved code</code>
+        </div>
+        <div>
+            <code class="rejected-line">Rejected code</code>
+        </div>
+        <br />
         <div>
             <textarea id="comment-text" rows="4" cols="50" required placeholder="Enter your comments"></textarea>
         </div>
         <div>
             <button type="button" class="btn btn-primary" onclick="submitChanges(true)">Approve Selected</button>
-        </div>
-        <div>
             <button type="button" class="btn btn-danger" onclick="submitChanges(false)">Reject Selected</button>
         </div>
+        <br />
+        <p id="error-message-form"></p>
     </div>
 
     @for (int i = 1; i <= Model.Count; i++)
@@ -64,7 +81,9 @@ else
         var ids = [];
         var selectedLines = document.getElementsByClassName("selected-line");
         for (i = 0; i < selectedLines.length; i++) {
-            ids.push(selectedLines[i].id.substring(4));
+            if (selectedLines[i].id.length > 3) {
+                ids.push(selectedLines[i].id.substring(4));
+            }
         }
 
         var comment = document.getElementById("comment-text").value;
@@ -76,18 +95,34 @@ else
             Comment: comment
         };
 
-        $.ajax({
-            type: "POST",
-            url: "../File/Index",
-            contentType: 'application/json',
-            data: JSON.stringify(dict),
-            success: function (data, textStatus, jQxhr) {
-                window.location.reload(true)
-            },
-            error: function (jqXhr, textStatus, errorThrown) {
-                console.log(errorThrown);
+        if (ids.length > 0 && comment.length > 0) {
+            $.ajax({
+                type: "POST",
+                url: "../File/Index",
+                contentType: 'application/json',
+                data: JSON.stringify(dict),
+                success: function (data, textStatus, jQxhr) {
+                    window.location.reload(true)
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+            })
+        }
+        else {
+            var errorMessage = "";
+            if (ids.length < 1) {
+                errorMessage += "Must select at least one line to review.";
             }
-        })
+            if (comment.length < 1) {
+                if (errorMessage.length > 0) {
+                    errorMessage += "\n";
+                }
+                errorMessage += "Comment field must have data.";
+            }
+            var errortext = document.getElementById("error-message-form");
+            errortext.innerHTML = errorMessage;
+        }
     }
 
 </script>
