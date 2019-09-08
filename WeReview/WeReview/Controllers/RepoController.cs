@@ -125,6 +125,11 @@ namespace WeReview.Controllers
                 thisFile.DownloadPath = c.DownloadUrl;
                 thisFile.Name = c.Name;
                 thisFile.Path = c.Path;
+                thisFile.FileValue = 0;
+                thisFile.ApprovedValue = 0;
+                thisFile.RejectedValue = 0;
+                thisFile.UnchangedValue = 0;
+                thisFile.UnapprovedValue = 0;
                 if (parent == null)
                 {
                     thisFile.ParentId = -1;

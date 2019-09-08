@@ -61,22 +61,50 @@ namespace WeReview.Controllers
                         thisLine.IsApproved = false;
                         thisLine.IsChanged = false;
                         thisLine.IsReviewed = false;
+                        thisLine.Value = 1;
                         lock (thisLock)
                         {
                             _context.GitHubLines.Add(thisLine);
                         }
+                        matchingFile.FileValue++;
                     }
 
                     selectedLines.Add(thisLine);
                 }
-                    
-                lock (thisLock)
+            }
+            int unchanged = 0;
+            int unapproved = 0;
+            int approved = 0;
+            int rejected = 0;
+            foreach (GitHubLine line in selectedLines)
+            {
+                if (!line.IsChanged)
                 {
-                    _context.SaveChanges();
+                    unchanged++;
+                }
+                else if (!line.IsReviewed)
+                {
+                    unapproved++;
+                }
+                else if (!line.IsApproved)
+                {
+                    rejected++;
+                }
+                else
+                {
+                    approved++;
                 }
             }
-
-
+            matchingFile.ApprovedValue = approved;
+            matchingFile.RejectedValue = rejected;
+            matchingFile.UnapprovedValue = unapproved;
+            matchingFile.UnchangedValue = unchanged;
+            matchingFile.FileValue = approved + rejected + unapproved + unchanged;
+            lock(thisLock)
+            {
+                _context.SaveChanges();
+            }
+            ViewData["File"] = matchingFile;
             return View(selectedLines);
         }
 

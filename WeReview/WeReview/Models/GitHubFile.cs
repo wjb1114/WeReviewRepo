@@ -18,6 +18,11 @@ namespace WeReview.Models
         public bool IsDir { get; set; }
         public int ParentId { get; set; }
         public int BranchId { get; set; }
+        public int FileValue { get; set; }
+        public int UnchangedValue { get; set; }
+        public int UnapprovedValue { get; set; }
+        public int ApprovedValue { get; set; }
+        public int RejectedValue { get; set; }
         [ForeignKey("BranchId")]
         public GitHubBranch Branch { get; set; }
     }

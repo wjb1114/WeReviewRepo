@@ -2,6 +2,7 @@
 
 @{
     int fileId = Model[0].FileId;
+    WeReview.Models.GitHubFile thisFile = (WeReview.Models.GitHubFile)ViewData["File"];
 }
 
 @if (Model.Count == 0)
@@ -10,43 +11,49 @@
 }
 else
 {
-    <div id="floating-form">
-        <p>Key:</p>
-        <div>
-            <code class="unchanged-line">Unchanged code</code>
-        </div>
-        <div>
-            <code class="unapproved-line">Changed, unreviewed code</code>
-        </div>
-        <div>
-            <code class="selected-line">Currently selected line(s)</code>
-        </div>
-        <div>
-            <code class="approved-line">Approved code</code>
-        </div>
-        <div>
-            <code class="rejected-line">Rejected code</code>
-        </div>
-        <br />
-        <div>
-            <textarea id="comment-text" rows="4" cols="50" required placeholder="Enter your comments"></textarea>
-        </div>
-        <div>
-            <select id="reason">
-                <option value="Approved">Approved</option>
-                <option value="Conventions">Rejected - Does not meet Code Conventions</option>
-                <option value="OOP">Rejected - Does not meet OOP Principles</option>
-                <option value="Compile">Rejected - Does not Compile</option>
-                <option value="Comment">Rejected - Other (Include reason in comment)</option>
-            </select>
-        </div>
-        <br />
-        <div>
-            <button type="button" class="btn btn-primary" onclick="submitChanges()">Submit</button>
-        </div>
-        <br />
-        <p id="error-message-form"></p>
+<div id="floating-form">
+    <p>Key:</p>
+    <div>
+        <code class="unchanged-line">Unchanged code: @(thisFile.UnchangedValue) lines</code>
     </div>
+    <div>
+        <code class="unapproved-line">Changed, unreviewed code: @(thisFile.UnapprovedValue) lines</code>
+    </div>
+    <div>
+        <code class="approved-line">Approved code: @(thisFile.ApprovedValue) lines</code>
+    </div>
+    <div>
+        <code class="rejected-line">Rejected code: @(thisFile.RejectedValue) lines</code>
+    </div>
+    <div>
+        <code class="selected-line">Currently selected line(s)</code>
+    </div>
+    <div>
+        <p>@(Math.Round(((float)thisFile.RejectedValue / (float)thisFile.FileValue) * 100))% rejected</p>
+    </div>
+    <div>
+        <p>@(Math.Round(((float)thisFile.ApprovedValue / (float)thisFile.FileValue) * 100))% approved</p>
+    </div>
+    <br />
+    <div>
+        <textarea id="comment-text" rows="4" cols="50" required placeholder="Enter your comments"></textarea>
+    </div>
+    <div>
+        <select id="reason">
+            <option value="Approved">Approved</option>
+            <option value="Conventions">Rejected - Does not meet Code Conventions</option>
+            <option value="OOP">Rejected - Does not meet OOP Principles</option>
+            <option value="Compile">Rejected - Does not Compile</option>
+            <option value="Comment">Rejected - Other (Include reason in comment)</option>
+        </select>
+    </div>
+    <br />
+    <div>
+        <button type="button" class="btn btn-primary" onclick="submitChanges()">Submit</button>
+    </div>
+    <br />
+    <p id="error-message-form"></p>
+</div>
 
     @for (int i = 1; i <= Model.Count; i++)
     {
