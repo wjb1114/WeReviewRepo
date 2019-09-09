@@ -37,6 +37,9 @@ namespace WeReview.Data
             builder.Entity<GitHubUserRepository>().HasOne(x => x.User).WithMany(x => x.UserRepositories).HasForeignKey(x => x.UserId);
 
             builder.Entity<GitHubReview>().Property(e => e.LineIds).HasConversion(reviewConverter);
+            builder.Entity<CsNode>().Property(e => e.LineIds).HasConversion(reviewConverter);
+            builder.Entity<CsNode>().Property(e => e.ChildNodeIds).HasConversion(reviewConverter);
+
             base.OnModelCreating(builder);
         }
     }

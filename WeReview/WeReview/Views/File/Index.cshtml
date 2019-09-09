@@ -3,6 +3,8 @@
 @{
     int fileId = Model[0].FileId;
     WeReview.Models.GitHubFile thisFile = (WeReview.Models.GitHubFile)ViewData["File"];
+    float approvedPercent = ((float)thisFile.ApprovedValue / (float)(thisFile.ApprovedValue + thisFile.RejectedValue + thisFile.UnapprovedValue)) * 100;
+    float rejectedPercent = ((float)thisFile.RejectedValue / (float)(thisFile.ApprovedValue + thisFile.RejectedValue + thisFile.UnapprovedValue)) * 100;
 }
 
 @if (Model.Count == 0)
@@ -29,10 +31,10 @@ else
         <code class="selected-line">Currently selected line(s)</code>
     </div>
     <div>
-        <p>@(Math.Round(((float)thisFile.RejectedValue / (float)thisFile.FileValue) * 100))% rejected</p>
+        <p>@((int)rejectedPercent)% rejected</p>
     </div>
     <div>
-        <p>@(Math.Round(((float)thisFile.ApprovedValue / (float)thisFile.FileValue) * 100))% approved</p>
+        <p>@((int)approvedPercent)% approved</p>
     </div>
     <br />
     <div>
