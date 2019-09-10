@@ -1,8 +1,8 @@
 ﻿@model List<WeReview.Models.GitHubLine>
 
 @{
-    int fileId = Model[0].FileId;
     WeReview.Models.GitHubFile thisFile = (WeReview.Models.GitHubFile)ViewData["File"];
+    int fileId = thisFile.FileId;
     float approvedPercent = ((float)thisFile.ApprovedValue / (float)(thisFile.ApprovedValue + thisFile.RejectedValue + thisFile.UnapprovedValue)) * 100;
     float rejectedPercent = ((float)thisFile.RejectedValue / (float)(thisFile.ApprovedValue + thisFile.RejectedValue + thisFile.UnapprovedValue)) * 100;
 }
