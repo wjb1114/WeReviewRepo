@@ -23,12 +23,17 @@ namespace WeReview.Data
         public DbSet<GitHubLine> GitHubLines { get; set; }
         public DbSet<GitHubUserRepository> GitHubUserRepos { get; set; }
         public DbSet<GitHubReview> GitHubReviews { get; set; }
+        public DbSet<CsNode> CsNodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             ValueConverter<int[], string> reviewConverter = new ValueConverter<int[], string>(
                 v => string.Join(";", v),
                 v => v.Split(";", StringSplitOptions.RemoveEmptyEntries).Select(val => int.Parse(val)).ToArray());
+
+            ValueConverter<List<int>, string> nodeConverter = new ValueConverter<List<int>, string>(
+                v => string.Join(";", v),
+                v => v.Split(";", StringSplitOptions.RemoveEmptyEntries).Select(val => int.Parse(val)).ToList());
 
             builder.Entity<GitHubUser>().HasKey(x => x.UserId);
             builder.Entity<GitHubRepository>().HasKey(x => x.RepositoryId);
@@ -37,8 +42,8 @@ namespace WeReview.Data
             builder.Entity<GitHubUserRepository>().HasOne(x => x.User).WithMany(x => x.UserRepositories).HasForeignKey(x => x.UserId);
 
             builder.Entity<GitHubReview>().Property(e => e.LineIds).HasConversion(reviewConverter);
-            builder.Entity<CsNode>().Property(e => e.LineIds).HasConversion(reviewConverter);
-            builder.Entity<CsNode>().Property(e => e.ChildNodeIds).HasConversion(reviewConverter);
+            builder.Entity<CsNode>().Property(e => e.LineIds).HasConversion(nodeConverter);
+            builder.Entity<CsNode>().Property(e => e.ChildNodeIds).HasConversion(nodeConverter);
 
             base.OnModelCreating(builder);
         }

@@ -12,15 +12,13 @@ namespace WeReview.Models
         [Key]
         public int Id { get; set; }
         public string NodeName { get; set; }
-        public int[] LineIds { get; set; }
+        public List<int> LineIds { get; set; }
         public int FileId { get; set; }
         [ForeignKey("FileId")]
         public GitHubFile File { get; set; }
         public int? ParentNodeId { get; set; }
-        public int[] ChildNodeIds { get; set; }
+        public List<int> ChildNodeIds { get; set; }
         [ForeignKey("ParentNodeId")]
         public CsNode ParentNode { get; set; }
-        [ForeignKey("ChildNodeIds")]
-        public CsNode[] ChildNodes { get; set; }
     }
 }
