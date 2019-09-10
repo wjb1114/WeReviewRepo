@@ -29,7 +29,7 @@ namespace WeReview.Controllers
                 thisFile = _context.GitHubFiles.Where(f => f.FileId == fileId).Single();
             }
             BuildNodeTree(thisFile);
-            return View();
+            return RedirectToAction("Index", "File", new { fileId = thisFile.FileId });
         }
 
         private void BuildNodeTree(GitHubFile file, int? nodeId = null)
@@ -55,6 +55,7 @@ namespace WeReview.Controllers
                 {
                     thisNode.LineIds.Add(l.LineInFile);
                 }
+                thisNode.LineIds = thisNode.LineIds.OrderBy(l => l).ToList();
                 lock (thisLock)
                 {
                     _context.CsNodes.Add(thisNode);
@@ -153,7 +154,9 @@ namespace WeReview.Controllers
                         {
                             _context.CsNodes.Add(childNode);
                             _context.SaveChanges();
+                            thisNode = _context.CsNodes.Where(n => n.Id == thisNode.Id).Single();
                             thisNode.ChildNodeIds.Add(childNode.Id);
+                            _context.CsNodes.Update(thisNode);
                             _context.SaveChanges();
                         }
                     }
